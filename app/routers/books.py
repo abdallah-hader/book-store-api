@@ -38,8 +38,8 @@ def list_books(
     in_stock: bool = False,
     session: Session = Depends(get_session),
 ):
-    # mypy reads Book.author and Book.genres as the Python objects; SQLAlchemy uses the
-    # column attributes behind them.
+    # sql models reads the book.author and book.genres as sql columns,
+    # mypy read them as python objs.
     query = select(Book).options(selectinload(Book.author), selectinload(Book.genres))  # type: ignore[arg-type]
 
     if genre is not None:
