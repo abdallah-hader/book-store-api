@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
+
 from app.enums import OrderStatus, Role
 
 

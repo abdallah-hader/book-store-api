@@ -10,8 +10,8 @@ from pydantic import BaseModel
 
 from app.enums import OrderStatus, Role
 
-
 # ----------------------------------------------------------------- users
+
 
 class UserResponse(BaseModel):
     id: int
@@ -27,6 +27,7 @@ class TokenResponse(BaseModel):
 
 
 # --------------------------------------------------------------- authors
+
 
 class AuthorSummaryResponse(BaseModel):
     """An author as it appears inside a book: no list of books."""
@@ -63,12 +64,14 @@ class AuthorListItemResponse(BaseModel):
 
 # ---------------------------------------------------------------- genres
 
+
 class GenreResponse(BaseModel):
     id: int
     name: str
 
 
 # ----------------------------------------------------------------- books
+
 
 class BookResponse(BaseModel):
     id: int
@@ -80,6 +83,7 @@ class BookResponse(BaseModel):
 
 
 # ---------------------------------------------------------------- orders
+
 
 class OrderResponse(BaseModel):
     id: int

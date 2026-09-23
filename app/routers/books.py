@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
+
 from app.database import get_session
 from app.dependencies import require_roles
 from app.dtos.requests import BookCreateRequest, BookUpdateRequest
@@ -14,11 +15,13 @@ router = APIRouter(prefix="/books", tags=["books"])
 staff_or_admin = require_roles([Role.staff, Role.admin])
 admin_only = require_roles([Role.admin])
 
+
 def get_book_or_404(session, book_id):
     book = session.get(Book, book_id)
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
+
 
 def get_genres_or_404(session, genre_ids):
     genres = session.exec(select(Genre).where(Genre.id.in_(genre_ids))).all()
@@ -26,6 +29,7 @@ def get_genres_or_404(session, genre_ids):
     if missing:
         raise HTTPException(status_code=404, detail=f"Genres not found: {sorted(missing)}")
     return genres
+
 
 @router.get("", response_model=list[BookResponse])
 def list_books(
@@ -45,9 +49,11 @@ def list_books(
 
     return session.exec(query.order_by(Book.id)).all()
 
+
 @router.get("/{book_id}", response_model=BookResponse)
 def get_book(book_id: int, session: Session = Depends(get_session)):
     return get_book_or_404(session, book_id)
+
 
 @router.post("", response_model=BookResponse, status_code=201)
 def create_book(
@@ -64,6 +70,7 @@ def create_book(
     session.commit()
     session.refresh(book)
     return book
+
 
 @router.patch("/{book_id}", response_model=BookResponse)
 def update_book(
@@ -86,6 +93,7 @@ def update_book(
     session.commit()
     session.refresh(book)
     return book
+
 
 @router.delete("/{book_id}", status_code=204)
 def delete_book(

@@ -15,9 +15,7 @@ def create_admin(username: str, email: str, password: str):
 
     with Session(engine) as session:
         taken = session.exec(
-            select(User).where(
-                (User.username == details.username) | (User.email == details.email)
-            )
+            select(User).where((User.username == details.username) | (User.email == details.email))
         ).first()
         if taken:
             raise ValueError("A user with that username or email already exists")
@@ -51,4 +49,3 @@ if __name__ == "__main__":
         print(f"Could not create admin: {error}")
     else:
         print(f"Created admin '{admin.username}' with id {admin.id}")
-

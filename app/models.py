@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 from typing import Optional
+
 from sqlmodel import Field, Relationship, SQLModel
+
 from app.enums import OrderStatus, Role
 
 
@@ -12,6 +14,7 @@ class User(SQLModel, table=True):
     hashed_password: str
     role: Role = Role.customer
     is_active: bool = True
+
 
 class Author(SQLModel, table=True):
     __table_args__ = {"sqlite_autoincrement": True}

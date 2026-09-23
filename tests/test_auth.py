@@ -1,5 +1,6 @@
 SIGNUP = {"username": "amina", "email": "amina@example.com", "password": "reads4ever"}
 
+
 def test_signup_returns_a_customer_without_the_password(client):
     response = client.post("/auth/register", json=SIGNUP)
 
@@ -35,7 +36,9 @@ def test_login_returns_a_token(client):
 def test_a_wrong_password_and_an_unknown_user_look_identical(client):
     client.post("/auth/register", json=SIGNUP)
 
-    wrong_password = client.post("/auth/login", data={"username": "amina", "password": "wrongpass1"})
+    wrong_password = client.post(
+        "/auth/login", data={"username": "amina", "password": "wrongpass1"}
+    )
     no_such_user = client.post("/auth/login", data={"username": "ghost", "password": "wrongpass1"})
 
     assert wrong_password.status_code == no_such_user.status_code == 401

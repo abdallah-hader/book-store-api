@@ -13,8 +13,13 @@ def test_a_book_shows_its_author_and_genres_nested(client, staff):
 
     book = client.post(
         "/books",
-        json={"title": "Dune", "author_id": author["id"],
-              "genre_ids": [fiction["id"], classic["id"]], "price": 12.5, "stock": 3},
+        json={
+            "title": "Dune",
+            "author_id": author["id"],
+            "genre_ids": [fiction["id"], classic["id"]],
+            "price": 12.5,
+            "stock": 3,
+        },
         headers=staff,
     ).json()
 
@@ -36,7 +41,9 @@ def test_a_book_for_an_author_who_does_not_exist_is_refused(client, staff):
 def test_the_author_list_counts_books_and_keeps_authors_with_none(client, staff):
     herbert = client.post("/authors", json={"name": "Frank Herbert"}, headers=staff).json()
     client.post("/authors", json={"name": "Jane Austen"}, headers=staff)
-    client.post("/books", json={"title": "Dune", "author_id": herbert["id"], "price": 12.5}, headers=staff)
+    client.post(
+        "/books", json={"title": "Dune", "author_id": herbert["id"], "price": 12.5}, headers=staff
+    )
 
     counts = {author["name"]: author["book_count"] for author in client.get("/authors").json()}
 
@@ -48,7 +55,9 @@ def test_an_author_keeps_their_one_profile(client, staff):
     author = client.post("/authors", json={"name": "Frank Herbert"}, headers=staff).json()
 
     client.put(f"/authors/{author['id']}/profile", json={"bio": "First draft."}, headers=staff)
-    response = client.put(f"/authors/{author['id']}/profile", json={"bio": "Wrote Dune."}, headers=staff)
+    response = client.put(
+        f"/authors/{author['id']}/profile", json={"bio": "Wrote Dune."}, headers=staff
+    )
 
     assert response.json()["profile"] == {"bio": "Wrote Dune.", "website": None}
 
@@ -56,8 +65,16 @@ def test_an_author_keeps_their_one_profile(client, staff):
 def test_filtering_by_genre_uses_the_junction_table(client, staff):
     author = client.post("/authors", json={"name": "Walt Whitman"}, headers=staff).json()
     poetry = client.post("/genres", json={"name": "poetry"}, headers=staff).json()
-    client.post("/books", json={"title": "Leaves of Grass", "author_id": author["id"],
-                                "genre_ids": [poetry["id"]], "price": 9.0}, headers=staff)
+    client.post(
+        "/books",
+        json={
+            "title": "Leaves of Grass",
+            "author_id": author["id"],
+            "genre_ids": [poetry["id"]],
+            "price": 9.0,
+        },
+        headers=staff,
+    )
 
     assert [b["title"] for b in client.get("/books?genre=poetry").json()] == ["Leaves of Grass"]
     assert client.get("/books?genre=mystery").json() == []

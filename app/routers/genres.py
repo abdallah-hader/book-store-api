@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
+
 from app.database import get_session
 from app.dependencies import require_roles
 from app.dtos.requests import GenreCreateRequest
@@ -12,9 +13,11 @@ router = APIRouter(prefix="/genres", tags=["genres"])
 staff_or_admin = require_roles([Role.staff, Role.admin])
 admin_only = require_roles([Role.admin])
 
+
 @router.get("", response_model=list[GenreResponse])
 def list_genres(session: Session = Depends(get_session)):
     return session.exec(select(Genre).order_by(Genre.name)).all()
+
 
 @router.post("", response_model=GenreResponse, status_code=201)
 def create_genre(
@@ -29,6 +32,7 @@ def create_genre(
     session.commit()
     session.refresh(genre)
     return genre
+
 
 @router.delete("/{genre_id}", status_code=204)
 def delete_genre(

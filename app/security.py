@@ -17,6 +17,7 @@ def hash_password(password):
 def verify_password(password, hashed_password):
     return password_hash.verify(password, hashed_password)
 
+
 def create_access_token(user_id):
     expires_at = datetime.now(timezone.utc) + timedelta(
         minutes=settings.access_token_expire_minutes
@@ -36,4 +37,3 @@ def read_user_id_from_token(token):
         return int(payload["sub"])
     except (jwt.InvalidTokenError, ValueError):
         return None
-
