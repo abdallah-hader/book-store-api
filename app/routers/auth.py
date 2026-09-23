@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
-from app.database import get_db_session
+from app.database import get_session
 from app.dependencies import get_current_user
 from app.dtos.requests import UserCreateRequest
-from app.dtos.responces import TokenResponse, UserResponse
+from app.dtos.responses import TokenResponse, UserResponse
 from app.enums import Role
 from app.models import User
 from app.security import DUMMY_HASH, create_access_token, hash_password, verify_password
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserResponse, status_code=201)
-def register(new_user: UserCreateRequest, session: Session = Depends(get_db_session)):
+def register(new_user: UserCreateRequest, session: Session = Depends(get_session)):
     if session.exec(select(User).where(User.username == new_user.username)).first():
         raise HTTPException(status_code=409, detail="user exists")
     if session.exec(select(User).where(User.email == new_user.email)).first():
@@ -35,7 +35,7 @@ def register(new_user: UserCreateRequest, session: Session = Depends(get_db_sess
 @router.post("/login", response_model=TokenResponse)
 def login(
     form: OAuth2PasswordRequestForm = Depends(),
-    session: Session = Depends(get_db_session),
+    session: Session = Depends(get_session),
 ):
     wrong_credentials = HTTPException(
         status_code=401,

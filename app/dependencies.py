@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
 
-from app.database import get_db_session
+from app.database import get_session
 from app.models import User
 from app.security import read_user_id_from_token
 
@@ -10,7 +10,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
-    session: Session = Depends(get_db_session),
+    session: Session = Depends(get_session),
 ):
     not_authenticated = HTTPException(
         status_code=401,

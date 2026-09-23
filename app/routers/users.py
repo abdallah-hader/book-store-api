@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from app.database import get_db_session
+from app.database import get_session
 from app.dependencies import require_roles
 from app.dtos.requests import ActiveUpdateRequest, RoleUpdateRequest
-from app.dtos.responces import UserResponse
+from app.dtos.responses import UserResponse
 from app.enums import Role
 from app.models import User
 
@@ -23,7 +23,7 @@ def get_user_or_404(session, user_id):
 @router.get("", response_model=list[UserResponse])
 def list_users(
     role: Role | None = None,
-    session: Session = Depends(get_db_session),
+    session: Session = Depends(get_session),
     current_user: User = Depends(admin_only),
 ):
     query = select(User)
@@ -36,7 +36,7 @@ def list_users(
 def change_role(
     user_id: int,
     update: RoleUpdateRequest,
-    session: Session = Depends(get_db_session),
+    session: Session = Depends(get_session),
     current_user: User = Depends(admin_only),
 ):
     user = get_user_or_404(session, user_id)
@@ -53,7 +53,7 @@ def change_role(
 def set_active(
     user_id: int,
     update: ActiveUpdateRequest,
-    session: Session = Depends(get_db_session),
+    session: Session = Depends(get_session),
     current_user: User = Depends(admin_only),
 ):
     user = get_user_or_404(session, user_id)
