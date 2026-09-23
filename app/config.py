@@ -12,4 +12,5 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
 
 
-settings = Settings()
+# pydantic-settings fills secret_key from .env at runtime, which mypy cannot see.
+settings = Settings()  # type: ignore[call-arg]

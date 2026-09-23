@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, func, select
+from sqlmodel import Session, col, func, select
 
 from app.database import get_session
 from app.dependencies import require_roles
@@ -23,15 +23,16 @@ def get_author_or_404(session, author_id):
 
 @router.get("", response_model=list[AuthorListItemResponse])
 def list_authors(has_books: bool = False, session: Session = Depends(get_session)):
-    query = select(Author, func.count(Book.id))
+    query = select(Author, func.count(col(Book.id)))
     if has_books:
         query = query.join(Book)
     else:
         query = query.outerjoin(Book)
-    query = query.group_by(Author.id).order_by(Author.id)
+    query = query.group_by(col(Author.id)).order_by(col(Author.id))
 
+    # author.id is typed int | None, but an author read back from the database always has one.
     return [
-        AuthorListItemResponse(id=author.id, name=author.name, book_count=book_count)
+        AuthorListItemResponse(id=author.id, name=author.name, book_count=book_count)  # type: ignore[arg-type]
         for author, book_count in session.exec(query).all()
     ]
 

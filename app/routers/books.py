@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
 from app.database import get_session
 from app.dependencies import require_roles
@@ -24,7 +24,7 @@ def get_book_or_404(session, book_id):
 
 
 def get_genres_or_404(session, genre_ids):
-    genres = session.exec(select(Genre).where(Genre.id.in_(genre_ids))).all()
+    genres = session.exec(select(Genre).where(col(Genre.id).in_(genre_ids))).all()
     missing = set(genre_ids) - {genre.id for genre in genres}
     if missing:
         raise HTTPException(status_code=404, detail=f"Genres not found: {sorted(missing)}")
@@ -38,16 +38,18 @@ def list_books(
     in_stock: bool = False,
     session: Session = Depends(get_session),
 ):
-    query = select(Book).options(selectinload(Book.author), selectinload(Book.genres))
+    # mypy reads Book.author and Book.genres as the Python objects; SQLAlchemy uses the
+    # column attributes behind them.
+    query = select(Book).options(selectinload(Book.author), selectinload(Book.genres))  # type: ignore[arg-type]
 
     if genre is not None:
-        query = query.join(Book.genres).where(Genre.name == genre.lower())
+        query = query.join(Book.genres).where(Genre.name == genre.lower())  # type: ignore[arg-type]
     if author_id is not None:
         query = query.where(Book.author_id == author_id)
     if in_stock:
         query = query.where(Book.stock > 0)
 
-    return session.exec(query.order_by(Book.id)).all()
+    return session.exec(query.order_by(col(Book.id))).all()
 
 
 @router.get("/{book_id}", response_model=BookResponse)

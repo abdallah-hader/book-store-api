@@ -28,8 +28,10 @@ def place_order(
 
     book.stock -= new_order.quantity
     order = Order(
-        user_id=current_user.id,  # from the token -- never from the request
-        book_id=book.id,
+        # An id is typed int | None because it is None before saving; a row read back
+        # from the database always has one.
+        user_id=current_user.id,  # type: ignore[arg-type]  # from the token, never the request
+        book_id=book.id,  # type: ignore[arg-type]
         quantity=new_order.quantity,
         total_price=round(book.price * new_order.quantity, 2),
     )
