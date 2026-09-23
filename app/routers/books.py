@@ -1,3 +1,5 @@
+"""Routes for the catalogue."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, col, select
@@ -40,7 +42,10 @@ def list_books(
 ):
     # sql models reads the book.author and book.genres as sql columns,
     # mypy read them as python objs.
-    query = select(Book).options(selectinload(Book.author), selectinload(Book.genres))  # type: ignore[arg-type]
+    query = select(Book).options(
+        selectinload(Book.author),  # type: ignore[arg-type]
+        selectinload(Book.genres),  # type: ignore[arg-type]
+    )
 
     if genre is not None:
         query = query.join(Book.genres).where(Genre.name == genre.lower())  # type: ignore[arg-type]

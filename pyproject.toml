@@ -7,3 +7,19 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.ruff.lint.flake8-bugbear]
 # FastAPI's whole design is calling these in argument defaults.
 extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path", "fastapi.Body"]
+
+[tool.pylint.main]
+# Ruff already enforces the line-level rules; let Pylint look at design instead.
+disable = [
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "unused-argument",        # FastAPI dependencies are declared as parameters and never read
+    "too-few-public-methods", # every Pydantic DTO would trip this
+]
+
+[tool.pylint.basic]
+# Enum members are lower case here because their values are what the API sends.
+class-const-naming-style = "any"
+
+[tool.pylint.format]
+max-line-length = 100

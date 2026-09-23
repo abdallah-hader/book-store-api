@@ -1,3 +1,5 @@
+"""Password hashing and access tokens."""
+
 from datetime import datetime, timedelta, timezone
 
 import jwt

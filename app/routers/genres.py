@@ -1,3 +1,5 @@
+"""Routes for genres."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 

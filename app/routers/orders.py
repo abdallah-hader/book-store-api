@@ -1,3 +1,5 @@
+"""Routes for placing and managing orders."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 

@@ -1,3 +1,5 @@
+"""Creates the FastAPI app and plugs in the routers."""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -8,7 +10,7 @@ from app.routers import auth, authors, books, genres, orders, users
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     create_db_and_tables()
     yield
 

@@ -1,3 +1,5 @@
+"""Dependencies that identify the user and check their role."""
+
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session

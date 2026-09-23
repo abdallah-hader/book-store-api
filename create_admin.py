@@ -1,3 +1,5 @@
+"""cli script that creates the first admin account."""
+
 from getpass import getpass
 
 from pydantic import ValidationError
@@ -35,12 +37,12 @@ def create_admin(username: str, email: str, password: str):
 if __name__ == "__main__":
     create_db_and_tables()
 
-    username = input("Admin username: ")
-    email = input("Admin email: ")
-    password = getpass("Admin password: ")
+    entered_username = input("Admin username: ")
+    entered_email = input("Admin email: ")
+    entered_password = getpass("Admin password: ")
 
     try:
-        admin = create_admin(username, email, password)
+        new_admin = create_admin(entered_username, entered_email, entered_password)
     except ValidationError as error:
         print("Could not create admin:")
         for problem in error.errors():
@@ -48,4 +50,4 @@ if __name__ == "__main__":
     except ValueError as error:
         print(f"Could not create admin: {error}")
     else:
-        print(f"Created admin '{admin.username}' with id {admin.id}")
+        print(f"Created admin '{new_admin.username}' with id {new_admin.id}")

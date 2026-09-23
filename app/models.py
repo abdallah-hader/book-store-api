@@ -1,3 +1,5 @@
+"""Database tables (entities)."""
+
 from datetime import datetime, timezone
 from typing import Optional
 

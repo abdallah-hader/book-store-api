@@ -1,3 +1,5 @@
+"""App settings, read from the environment and the .env file."""
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

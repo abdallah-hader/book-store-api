@@ -1,3 +1,5 @@
+"""Routes for signing up, logging in, and reading the current user."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select

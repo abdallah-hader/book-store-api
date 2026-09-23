@@ -1,3 +1,5 @@
+"""Routes for authors and their profiles."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, col, func, select
 
@@ -23,7 +25,7 @@ def get_author_or_404(session, author_id):
 
 @router.get("", response_model=list[AuthorListItemResponse])
 def list_authors(has_books: bool = False, session: Session = Depends(get_session)):
-    query = select(Author, func.count(col(Book.id)))
+    query = select(Author, func.count(col(Book.id)))  # pylint: disable=not-callable
     if has_books:
         query = query.join(Book)
     else:
@@ -32,7 +34,11 @@ def list_authors(has_books: bool = False, session: Session = Depends(get_session
 
     # author.id is typed int | None, but an author read back from the database always has one.
     return [
-        AuthorListItemResponse(id=author.id, name=author.name, book_count=book_count)  # type: ignore[arg-type]
+        AuthorListItemResponse(
+            id=author.id,  # type: ignore[arg-type]
+            name=author.name,
+            book_count=book_count,
+        )
         for author, book_count in session.exec(query).all()
     ]
 

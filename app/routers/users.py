@@ -1,3 +1,5 @@
+"""Admin routes for managing user roles and accounts."""
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 

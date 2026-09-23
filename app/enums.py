@@ -1,3 +1,5 @@
+"""Enums shared by the entities and the DTOs."""
+
 from enum import Enum
 
 
